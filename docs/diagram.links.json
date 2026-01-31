@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "links": {
+    "lgRl9YZEi7Jn635xtGzA-2": {
+      "docPath": "docs/readme.md",
+      "docType": "markdown",
+      "title": "readme.md"
+    },
+    "lgRl9YZEi7Jn635xtGzA-1": {
+      "docPath": "docs/readme.md",
+      "docType": "markdown",
+      "title": "readme.md"
+    },
+    "lgRl9YZEi7Jn635xtGzA-3": {
+      "docPath": "docs/test2.md",
+      "docType": "markdown",
+      "title": "test2.md"
+    }
+  },
+  "uiState": {
+    "openTabs": [],
+    "activeSplit": "main"
+  },
+  "audit": {
+    "lastModified": "2026-01-31T21:06:51.813Z"
+  }
+}

@@ -1,0 +1,232 @@
+{
+  "app": {
+    "name": "DiagramDocs",
+    "description": "Read-only SVG diagram viewer with document linking and in-app document viewing",
+    "mode": "local_only",
+    "diagramAuthoring": "external_only",
+    "editsSvg": false,
+    "licenseIntent": "MIT",
+    "targetUsers": ["engineers", "architects", "students", "researchers"]
+  },
+
+  "workspace": {
+    "type": "folder",
+    "openBehavior": "user_selects_root_folder",
+    "requiredFiles": {
+      "diagram": "diagram.svg",
+      "links": "diagram.links.json"
+    },
+    "recommendedStructure": {
+      "docs": "docs/",
+      "assets": "assets/"
+    },
+    "rules": {
+      "paths": "relative_only",
+      "denyOutsideWorkspace": true,
+      "caseSensitive": false
+    },
+    "example": [
+      "architecture/",
+      "  diagram.svg",
+      "  diagram.links.json",
+      "  docs/",
+      "    auth.md",
+      "    flow.pdf",
+      "    schema.json",
+      "    sequence.png"
+    ]
+  },
+
+  "svgHandling": {
+    "mode": "read_only",
+    "mutationsAllowed": false,
+    "reloadOnChange": true,
+    "elementSelection": {
+      "enabled": true,
+      "sourceOfIdentity": "svg_element_id",
+      "fallbackIfMissingId": "ignore_element"
+    },
+    "interaction": {
+      "pan": true,
+      "zoom": true,
+      "select": true,
+      "hoverHighlight": true
+    }
+  },
+
+  "diagramEditing": {
+    "enabled": false,
+    "explicitlyDisabledTools": [
+      "add_shape",
+      "add_arrow",
+      "add_rectangle",
+      "add_ellipse",
+      "add_diamond",
+      "add_text",
+      "resize",
+      "rotate",
+      "recolor",
+      "move",
+      "delete"
+    ]
+  },
+
+  "linking": {
+    "scope": "svg_element_to_document",
+    "cardinality": "one_document_per_element",
+    "linkStorage": "sidecar_json_only",
+    "activation": {
+      "singleClick": "select_element",
+      "doubleClick": "open_linked_document",
+      "ctrlOrCmdClick": "open_linked_document",
+      "contextMenu": [
+        "link_document",
+        "change_link",
+        "remove_link",
+        "open_document",
+        "reveal_document_in_folder"
+      ]
+    },
+    "visualIndicators": {
+      "linkedElementBadge": true,
+      "hoverTooltip": true
+    }
+  },
+
+  "supportedDocuments": {
+    "allowed": [
+      { "kind": "pdf", "extensions": ["pdf"] },
+      { "kind": "image", "extensions": ["png", "jpg", "jpeg", "svg", "webp"] },
+      { "kind": "markdown", "extensions": ["md"] },
+      { "kind": "json", "extensions": ["json"] }
+    ],
+    "mode": "render_only",
+    "editing": false
+  },
+
+  "documentViewer": {
+    "openLocation": "in_app",
+    "layout": "vs_code_like_tabs",
+    "tabs": {
+      "deduplicate": true,
+      "reorder": true,
+      "close": true,
+      "pin": true
+    },
+    "splitView": {
+      "enabled": true,
+      "maxSplits": 2
+    },
+    "renderers": {
+      "pdf": {
+        "engine": "pdf_renderer",
+        "features": ["zoom", "page_navigation", "search"]
+      },
+      "image": {
+        "engine": "image_renderer",
+        "features": ["zoom", "pan", "fit_to_view"]
+      },
+      "markdown": {
+        "engine": "markdown_renderer",
+        "features": ["headings", "tables", "code_blocks"],
+        "externalAssets": false
+      },
+      "json": {
+        "engine": "json_renderer",
+        "features": ["pretty_print", "collapse_expand"]
+      }
+    }
+  },
+
+  "sidecarFile": {
+    "fileName": "diagram.links.json",
+    "schemaVersion": 1,
+    "structure": {
+      "links": {
+        "key": "svg_element_id",
+        "value": {
+          "docPath": "relative_path",
+          "docType": "pdf|image|markdown|json",
+          "title": "optional_string"
+        }
+      },
+      "uiState": {
+        "openTabs": [
+          {
+            "docPath": "docs/auth.md",
+            "active": true,
+            "pinned": false,
+            "group": "main"
+          }
+        ],
+        "activeSplit": "main"
+      },
+      "audit": {
+        "lastModified": "iso8601"
+      }
+    },
+    "example": {
+      "schemaVersion": 1,
+      "links": {
+        "auth-service": {
+          "docPath": "docs/auth.md",
+          "docType": "markdown",
+          "title": "Authentication Service"
+        },
+        "data-flow": {
+          "docPath": "docs/flow.pdf",
+          "docType": "pdf",
+          "title": "System Data Flow"
+        }
+      },
+      "uiState": {
+        "openTabs": [
+          {
+            "docPath": "docs/auth.md",
+            "active": true,
+            "pinned": true,
+            "group": "main"
+          }
+        ],
+        "activeSplit": "main"
+      },
+      "audit": {
+        "lastModified": "2026-02-01T00:00:00+05:30"
+      }
+    }
+  },
+
+  "fileWatching": {
+    "enabled": true,
+    "watch": ["diagram.svg", "diagram.links.json", "docs/**"],
+    "onExternalChange": {
+      "diagramSvg": "reload_svg",
+      "linkedDoc": "refresh_view_if_open",
+      "linksFile": "reload_links"
+    }
+  },
+
+  "security": {
+    "workspaceSandbox": true,
+    "denyAbsolutePaths": true,
+    "denyScriptExecution": true,
+    "denyNetworkFetch": true
+  },
+
+  "acceptanceCriteria": {
+    "svgIntegrity": [
+      "SVG file is never modified by the application",
+      "All diagram edits must be performed externally"
+    ],
+    "linking": [
+      "User can associate exactly one document with an SVG element",
+      "Link is persisted only in diagram.links.json",
+      "Removing the sidecar removes all links"
+    ],
+    "viewer": [
+      "Linked documents open inside the app in tabs",
+      "Opening the same document twice focuses the existing tab",
+      "Unsupported file types cannot be linked"
+    ]
+  }
+}
