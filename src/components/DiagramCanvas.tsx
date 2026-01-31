@@ -27,6 +27,8 @@ export function DiagramCanvas() {
   const showRawSvg = Boolean(svgContent && shapes.length === 0);
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const zoomPanRef = useRef({ zoom, pan });
+  zoomPanRef.current = { zoom, pan };
   const [dragging, setDragging] = useState<string | null>(null);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, shapeX: 0, shapeY: 0 });
   const [panning, setPanning] = useState(false);
@@ -205,30 +207,33 @@ export function DiagramCanvas() {
     [shapes, toCanvas, showRawSvg, getRawSvgElementId]
   );
 
-  const handleWheel = useCallback(
-    (e: React.WheelEvent) => {
-      const el = containerRef.current;
-      if (!el) return;
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
 
+    const onWheel = (e: WheelEvent) => {
+      const { zoom: z, pan: p } = zoomPanRef.current;
       if (e.ctrlKey || e.metaKey) {
         e.preventDefault();
         const rect = el.getBoundingClientRect();
         const sx = e.clientX - rect.left;
         const sy = e.clientY - rect.top;
         const delta = e.deltaY > 0 ? -0.1 : 0.1;
-        const newZoom = Math.max(0.05, Math.min(64, zoom + delta));
+        const newZoom = Math.max(0.05, Math.min(64, z + delta));
         setZoom(newZoom);
         setPan({
-          x: sx - ((sx - pan.x) * newZoom) / zoom,
-          y: sy - ((sy - pan.y) * newZoom) / zoom,
+          x: sx - ((sx - p.x) * newZoom) / z,
+          y: sy - ((sy - p.y) * newZoom) / z,
         });
       } else {
         e.preventDefault();
-        setPan({ x: pan.x - e.deltaX, y: pan.y - e.deltaY });
+        setPan({ x: p.x - e.deltaX, y: p.y - e.deltaY });
       }
-    },
-    [zoom, pan, setZoom, setPan]
-  );
+    };
+
+    el.addEventListener("wheel", onWheel, { passive: false });
+    return () => el.removeEventListener("wheel", onWheel);
+  }, [setZoom, setPan]);
 
   return (
     <div
@@ -240,7 +245,6 @@ export function DiagramCanvas() {
       onPointerLeave={handlePointerUp}
       onDoubleClick={handleDoubleClick}
       onContextMenu={handleContextMenu}
-      onWheel={handleWheel}
       style={{
         cursor: panning ? "grabbing" : dragging ? "move" : connectorDragging ? "crosshair" : "default",
       }}

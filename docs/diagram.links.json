@@ -6,22 +6,41 @@
       "docType": "markdown",
       "title": "readme.md"
     },
-    "lgRl9YZEi7Jn635xtGzA-1": {
-      "docPath": "docs/readme.md",
-      "docType": "markdown",
-      "title": "readme.md"
-    },
     "lgRl9YZEi7Jn635xtGzA-3": {
       "docPath": "docs/test2.md",
       "docType": "markdown",
       "title": "test2.md"
+    },
+    "lgRl9YZEi7Jn635xtGzA-1": {
+      "docPath": "docs/markdown-test.md",
+      "docType": "markdown",
+      "title": "markdown-test.md"
     }
   },
   "uiState": {
-    "openTabs": [],
+    "openTabs": [
+      {
+        "docPath": "docs/readme.md",
+        "active": false,
+        "pinned": false,
+        "group": "main"
+      },
+      {
+        "docPath": "docs/test2.md",
+        "active": false,
+        "pinned": false,
+        "group": "main"
+      },
+      {
+        "docPath": "docs/markdown-test.md",
+        "active": true,
+        "pinned": false,
+        "group": "main"
+      }
+    ],
     "activeSplit": "main"
   },
   "audit": {
-    "lastModified": "2026-01-31T21:06:51.813Z"
+    "lastModified": "2026-01-31T22:00:28.280Z"
   }
 }
